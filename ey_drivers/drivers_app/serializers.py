@@ -31,7 +31,7 @@ class DriversSerializer(serializers.ModelSerializer):
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule
-        fields = ['driver_id', 'start_time', 'end_time']
+        fields = ['driver_id', 'start_time', 'end_time', 'hours_worked_']
 
     # driver_id = serializers.IntegerField(read_only=True)
     # start_time = serializers.DateTimeField(required=True)
