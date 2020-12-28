@@ -11,12 +11,19 @@ from .serializers import DriversSerializer, ScheduleSerializer
 
 
 
+# a view that supports listing all the existing drivers, or creating a new driver.
 class DriversList(generics.ListCreateAPIView):
+    """
+    List all drivers, or create a new driver.
+    """
     queryset = Drivers.objects.all()
     serializer_class = DriversSerializer
 
 
 class DriversDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a driver.
+    """
     queryset = Drivers.objects.all()
     serializer_class = DriversSerializer
 
@@ -24,6 +31,12 @@ class DriversDetail(generics.RetrieveUpdateDestroyAPIView):
 class ScheduleList(generics.ListCreateAPIView):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
+
+    # def get_queryset(self):
+    #     return Schedule.objects.annotate(
+    #         total_trucks=Count('trucks'),
+    #         total_capacity=Sum('trucks__capacity')
+    #     )
 
 
 class ScheduleDetail(generics.RetrieveUpdateDestroyAPIView):

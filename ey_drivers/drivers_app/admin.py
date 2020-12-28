@@ -1,6 +1,11 @@
 from django.contrib import admin
+from django.utils.html import format_html_join
+from django.contrib.admin import AdminSite
 from .models import Drivers
 from .models import Schedule
+
+# class MyAdminSite(AdminSite):
+AdminSite.site_header = "הסעות תלמידים עמק יזרעאל"
 
 
 class DriverAdmin(admin.ModelAdmin):
@@ -17,4 +22,3 @@ class ScheduleAdmin(admin.ModelAdmin):
 
 admin.site.register(Drivers, DriverAdmin)
 admin.site.register(Schedule, ScheduleAdmin)
-
