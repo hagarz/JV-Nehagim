@@ -29,8 +29,22 @@ class DriversDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ScheduleList(generics.ListCreateAPIView):
-    queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
+
+    def get_queryset(self):
+        queryset = Schedule.objects.all()
+        driver_id = self.request.query_params.get('driver_id', None)
+        if driver_id is not None:
+            queryset = queryset.filter(driver_id=driver_id)
+        from_date = self.request.query_params.get('from_date', None)
+        # date format: YEAR-MONTH-DAY example: 2020-05-16
+        if from_date is not None:
+            queryset = queryset.filter(start_time__gte=from_date)
+        to_date = self.request.query_params.get('to_date', None)
+        if to_date is not None:
+            queryset = queryset.filter(start_time__lte=to_date)
+        return queryset
+
 
     # def get_queryset(self):
     #     return Schedule.objects.annotate(

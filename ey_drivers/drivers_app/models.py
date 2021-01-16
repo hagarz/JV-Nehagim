@@ -31,7 +31,7 @@ class Schedule(models.Model):
     end_time = models.DateTimeField("סיום עבודה", auto_now=False, auto_now_add=False)
 
     def __str__(self):
-        return f"{str(self.driver_id)};  תאריך: {str(self.start_time)}; שעות: {str(self.hours_worked_property)} "
+        return f"{str(self.driver_id)};  תאריך* 5: {str(self.start_time)}; שעות: {str(self.hours_worked_property)} "
 
     def hours_worked_(self):
         if self.start_time and self.end_time:
