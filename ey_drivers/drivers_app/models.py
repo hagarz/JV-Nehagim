@@ -57,11 +57,7 @@ class Schedule(models.Model):
         if self.end_time is not None and self.start_time >= self.end_time:
             raise ValidationError('זמן סיום משמרת לפני תחילת משמרת, אנא בדקי את התאריכים והשעות שהזנת ונסי שוב.')
 
-
-        # Don't allow less than 7 hrs rest between shifts
         all_driver_records = Schedule.objects.filter(driver_id=self.driver_id)
-
-        # all_driver_records = all_driver_records.objects.filter(start_time__lt=F('start_time') + timedelta(hours=3))
         if all_driver_records:
             all_driver_records_before = Schedule.objects\
                 .filter(driver_id=self.driver_id, start_time__gt=self.start_time - timedelta(hours=7))\
@@ -69,14 +65,8 @@ class Schedule(models.Model):
             all_driver_records_after = Schedule.objects\
                 .filter(driver_id=self.driver_id, end_time__lt=self.end_time + timedelta(hours=7, days=0))\
                 .exclude(end_time__lt=self.end_time)
-            print("end_time:", self.end_time)
-            print("end_time_lt:", self.end_time + timedelta(hours=7, days=0))
-            print("all_driver_records_before:", all_driver_records_before)
-            print("all_driver_records_after:", all_driver_records_after)
-            # last_record = all_driver_records[all_driver_records.count()-1]  # get last shift
-            # hours_from_last_end = last_record.end_time
-            # time_from_last = self.start_time - hours_from_last_end
-            # if float(time_from_last.total_seconds()/3600) < 7:
+
+            # Don't allow less than 7 hrs rest between shifts
             if all_driver_records_before or all_driver_records_after:
                 raise ValidationError('נהג לא יתחיל את יום עבודתו בנהיגה אלא אחרי מנוחה שמחוץ לעבודה במשך 7 שעות רצופות לפחות')
 
@@ -100,23 +90,6 @@ class Schedule(models.Model):
                 raise ValidationError('נהג לא ינהג יותר מ- 68 שעות בכל תקופה של 7 ימים')
             # all_hours = Schedule.objects.annotate(F('hours_worked_'))
             # print('all_hours:', all_hours)
-
-    # def hours_per_week(self):
-    #     gw = \
-    #         Schedule.objects.annotate(
-    #             year=ExtractYear('start_time'),
-    #             week=ExtractWeek('start_time')).values('year', 'week')
-    #     gw = gw.annotate(Sum('hours_worked_')).values('year', 'week', 'driver_id')
-    #     for i in gw:
-    #         print(i)
-    #     # month = {Schedule.objects.annotate(month=ExtractMonth('start_time')).values('month').get(end_time__year=ExtractYear('start_time'))}
-    #     # # print(month)
-    #     # aggregate = Schedule.objects.extra(
-    #     #     {"month": ExtractMonth('start_time'), "year": ExtractYear('start_time')}).values('month', 'year').annotate(
-    #     #     total=Count('driver_id')).values('month', 'year', 'total')
-    #     # return month
-    #
-    # aggregated_month_hrs_property = property(hours_per_week)
 
     class Meta:
         verbose_name = 'משמרת'
